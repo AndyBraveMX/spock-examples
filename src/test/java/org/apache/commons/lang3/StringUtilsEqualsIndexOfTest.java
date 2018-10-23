@@ -16,26 +16,20 @@
  */
 package org.apache.commons.lang3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 
-import org.apache.commons.lang3.test.SystemDefaultsSwitch;
 import org.hamcrest.core.IsNot;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests {@link org.apache.commons.lang3.StringUtils} - Equals/IndexOf methods
  */
 public class StringUtilsEqualsIndexOfTest  {
-
-    @Rule
-    public SystemDefaultsSwitch defaults = new SystemDefaultsSwitch();
-
     private static final String BAR = "bar";
     /**
      * Supplementary character U+20000
@@ -206,10 +200,10 @@ public class StringUtilsEqualsIndexOfTest  {
     //-----------------------------------------------------------------------
     @Test
     public void testCompare_StringString() {
-        assertTrue(StringUtils.compare(null, null) == 0);
+        assertEquals(0, StringUtils.compare(null, null));
         assertTrue(StringUtils.compare(null, "a") < 0);
         assertTrue(StringUtils.compare("a", null) > 0);
-        assertTrue(StringUtils.compare("abc", "abc") == 0);
+        assertEquals(0, StringUtils.compare("abc", "abc"));
         assertTrue(StringUtils.compare("a", "b") < 0);
         assertTrue(StringUtils.compare("b", "a") > 0);
         assertTrue(StringUtils.compare("a", "B") > 0);
@@ -221,12 +215,12 @@ public class StringUtilsEqualsIndexOfTest  {
 
     @Test
     public void testCompare_StringStringBoolean() {
-        assertTrue(StringUtils.compare(null, null, false) == 0);
+        assertEquals(0, StringUtils.compare(null, null, false));
         assertTrue(StringUtils.compare(null, "a", true) < 0);
         assertTrue(StringUtils.compare(null, "a", false) > 0);
         assertTrue(StringUtils.compare("a", null, true) > 0);
         assertTrue(StringUtils.compare("a", null, false) < 0);
-        assertTrue(StringUtils.compare("abc", "abc", false) == 0);
+        assertEquals(0, StringUtils.compare("abc", "abc", false));
         assertTrue(StringUtils.compare("a", "b", false) < 0);
         assertTrue(StringUtils.compare("b", "a", false) > 0);
         assertTrue(StringUtils.compare("a", "B", false) > 0);
@@ -238,11 +232,11 @@ public class StringUtilsEqualsIndexOfTest  {
 
     @Test
     public void testCompareIgnoreCase_StringString() {
-        assertTrue(StringUtils.compareIgnoreCase(null, null) == 0);
+        assertEquals(0, StringUtils.compareIgnoreCase(null, null));
         assertTrue(StringUtils.compareIgnoreCase(null, "a") < 0);
         assertTrue(StringUtils.compareIgnoreCase("a", null) > 0);
-        assertTrue(StringUtils.compareIgnoreCase("abc", "abc") == 0);
-        assertTrue(StringUtils.compareIgnoreCase("abc", "ABC") == 0);
+        assertEquals(0, StringUtils.compareIgnoreCase("abc", "abc"));
+        assertEquals(0, StringUtils.compareIgnoreCase("abc", "ABC"));
         assertTrue(StringUtils.compareIgnoreCase("a", "b") < 0);
         assertTrue(StringUtils.compareIgnoreCase("b", "a") > 0);
         assertTrue(StringUtils.compareIgnoreCase("a", "B") < 0);
@@ -255,13 +249,13 @@ public class StringUtilsEqualsIndexOfTest  {
 
     @Test
     public void testCompareIgnoreCase_StringStringBoolean() {
-        assertTrue(StringUtils.compareIgnoreCase(null, null, false) == 0);
+        assertEquals(0, StringUtils.compareIgnoreCase(null, null, false));
         assertTrue(StringUtils.compareIgnoreCase(null, "a", true) < 0);
         assertTrue(StringUtils.compareIgnoreCase(null, "a", false) > 0);
         assertTrue(StringUtils.compareIgnoreCase("a", null, true) > 0);
         assertTrue(StringUtils.compareIgnoreCase("a", null, false) < 0);
-        assertTrue(StringUtils.compareIgnoreCase("abc", "abc", false) == 0);
-        assertTrue(StringUtils.compareIgnoreCase("abc", "ABC", false) == 0);
+        assertEquals(0, StringUtils.compareIgnoreCase("abc", "abc", false));
+        assertEquals(0, StringUtils.compareIgnoreCase("abc", "ABC", false));
         assertTrue(StringUtils.compareIgnoreCase("a", "b", false) < 0);
         assertTrue(StringUtils.compareIgnoreCase("b", "a", false) > 0);
         assertTrue(StringUtils.compareIgnoreCase("a", "B", false) < 0);

@@ -16,11 +16,13 @@
  */
 package org.apache.commons.lang3.mutable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * JUnit tests.
@@ -43,9 +45,9 @@ public class MutableFloatTest {
 
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void testConstructorNull() {
-        new MutableFloat((Number)null);
+        assertThrows(NullPointerException.class, () -> new MutableFloat((Number)null));
     }
 
     @Test
@@ -67,10 +69,10 @@ public class MutableFloatTest {
         assertEquals(Float.valueOf(3f), mutNum.getValue());
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void testSetNull() {
         final MutableFloat mutNum = new MutableFloat(0f);
-        mutNum.setValue(null);
+        assertThrows(NullPointerException.class, () -> mutNum.setValue(null));
     }
 
     @Test
@@ -91,16 +93,16 @@ public class MutableFloatTest {
         final MutableFloat mutNumB = new MutableFloat(0f);
         final MutableFloat mutNumC = new MutableFloat(1f);
 
-        assertTrue(mutNumA.equals(mutNumA));
-        assertTrue(mutNumA.equals(mutNumB));
-        assertTrue(mutNumB.equals(mutNumA));
-        assertTrue(mutNumB.equals(mutNumB));
-        assertFalse(mutNumA.equals(mutNumC));
-        assertFalse(mutNumB.equals(mutNumC));
-        assertTrue(mutNumC.equals(mutNumC));
-        assertFalse(mutNumA.equals(null));
-        assertFalse(mutNumA.equals(Float.valueOf(0f)));
-        assertFalse(mutNumA.equals("0"));
+        assertEquals(mutNumA, mutNumA);
+        assertEquals(mutNumA, mutNumB);
+        assertEquals(mutNumB, mutNumA);
+        assertEquals(mutNumB, mutNumB);
+        assertNotEquals(mutNumA, mutNumC);
+        assertNotEquals(mutNumB, mutNumC);
+        assertEquals(mutNumC, mutNumC);
+        assertNotEquals(null, mutNumA);
+        assertNotEquals(mutNumA, Float.valueOf(0f));
+        assertNotEquals("0", mutNumA);
     }
 
     @Test
@@ -109,10 +111,10 @@ public class MutableFloatTest {
         final MutableFloat mutNumB = new MutableFloat(0f);
         final MutableFloat mutNumC = new MutableFloat(1f);
 
-        assertTrue(mutNumA.hashCode() == mutNumA.hashCode());
-        assertTrue(mutNumA.hashCode() == mutNumB.hashCode());
+        assertEquals(mutNumA.hashCode(), mutNumA.hashCode());
+        assertEquals(mutNumA.hashCode(), mutNumB.hashCode());
         assertFalse(mutNumA.hashCode() == mutNumC.hashCode());
-        assertTrue(mutNumA.hashCode() == Float.valueOf(0f).hashCode());
+        assertEquals(mutNumA.hashCode(), Float.valueOf(0f).hashCode());
     }
 
     @Test
@@ -124,10 +126,10 @@ public class MutableFloatTest {
         assertEquals(-1, mutNum.compareTo(new MutableFloat(1f)));
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void testCompareToNull() {
         final MutableFloat mutNum = new MutableFloat(0f);
-        mutNum.compareTo(null);
+        assertThrows(NullPointerException.class, () -> mutNum.compareTo(null));
     }
 
     @Test

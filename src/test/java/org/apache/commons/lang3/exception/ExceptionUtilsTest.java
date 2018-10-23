@@ -16,12 +16,12 @@
  */
 package org.apache.commons.lang3.exception;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,9 +33,9 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.apache.commons.lang3.test.NotVisibleExceptionFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link org.apache.commons.lang3.exception.ExceptionUtils}.
@@ -52,7 +52,7 @@ public class ExceptionUtilsTest {
     private Throwable notVisibleException;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         withoutCause = createExceptionWithoutCause();
         nested = new NestableException(withoutCause);
@@ -66,8 +66,8 @@ public class ExceptionUtilsTest {
     }
 
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterEach
+    public void tearDown() {
         withoutCause = null;
         nested = null;
         withCause = null;
@@ -364,25 +364,23 @@ public class ExceptionUtilsTest {
 
     //-----------------------------------------------------------------------
     @Test
-    public void testPrintRootCauseStackTrace_Throwable() throws Exception {
+    public void testPrintRootCauseStackTrace_Throwable() {
         ExceptionUtils.printRootCauseStackTrace(null);
         // could pipe system.err to a known stream, but not much point as
         // internally this method calls stream method anyway
     }
 
     @Test
-    public void testPrintRootCauseStackTrace_ThrowableStream() throws Exception {
+    public void testPrintRootCauseStackTrace_ThrowableStream() {
         ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
         ExceptionUtils.printRootCauseStackTrace(null, (PrintStream) null);
         ExceptionUtils.printRootCauseStackTrace(null, new PrintStream(out));
         assertEquals(0, out.toString().length());
 
         out = new ByteArrayOutputStream(1024);
-        try {
-            ExceptionUtils.printRootCauseStackTrace(withCause, (PrintStream) null);
-            fail();
-        } catch (final IllegalArgumentException ex) {
-        }
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ExceptionUtils.printRootCauseStackTrace(withCause, (PrintStream) null));
 
         out = new ByteArrayOutputStream(1024);
         final Throwable cause = createExceptionWithCause();
@@ -397,18 +395,16 @@ public class ExceptionUtilsTest {
     }
 
     @Test
-    public void testPrintRootCauseStackTrace_ThrowableWriter() throws Exception {
+    public void testPrintRootCauseStackTrace_ThrowableWriter() {
         StringWriter writer = new StringWriter(1024);
         ExceptionUtils.printRootCauseStackTrace(null, (PrintWriter) null);
         ExceptionUtils.printRootCauseStackTrace(null, new PrintWriter(writer));
         assertEquals(0, writer.getBuffer().length());
 
         writer = new StringWriter(1024);
-        try {
-            ExceptionUtils.printRootCauseStackTrace(withCause, (PrintWriter) null);
-            fail();
-        } catch (final IllegalArgumentException ex) {
-        }
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> ExceptionUtils.printRootCauseStackTrace(withCause, (PrintWriter) null));
 
         writer = new StringWriter(1024);
         final Throwable cause = createExceptionWithCause();
@@ -424,7 +420,7 @@ public class ExceptionUtilsTest {
 
     //-----------------------------------------------------------------------
     @Test
-    public void testGetRootCauseStackTrace_Throwable() throws Exception {
+    public void testGetRootCauseStackTrace_Throwable() {
         assertEquals(0, ExceptionUtils.getRootCauseStackTrace(null).length);
 
         final Throwable cause = createExceptionWithCause();
@@ -449,9 +445,9 @@ public class ExceptionUtilsTest {
         assertFalse(match);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testRemoveCommonFrames_ListList() throws Exception {
-        ExceptionUtils.removeCommonFrames(null, null);
+    @Test
+    public void testRemoveCommonFrames_ListList() {
+        assertThrows(IllegalArgumentException.class, () -> ExceptionUtils.removeCommonFrames(null, null));
     }
 
     @Test
@@ -541,33 +537,20 @@ public class ExceptionUtilsTest {
     @Test
     public void testThrow() {
         final Exception expected = new InterruptedException();
-        try {
-            ExceptionUtils.rethrow(expected);
-            fail("Exception not thrown");
-        } catch (final Exception actual) {
-            assertSame(expected, actual);
-        }
+        Exception actual = assertThrows(Exception.class, () -> ExceptionUtils.rethrow(expected));
+        assertSame(expected, actual);
     }
 
     @Test
     public void testCatchTechniques() {
-        try {
-            throwsCheckedException();
-            fail("Exception not thrown");
-        } catch (final Exception ioe) {
-            assertTrue(ioe instanceof IOException);
-            assertEquals(1, ExceptionUtils.getThrowableCount(ioe));
-        }
+        IOException ioe = assertThrows(IOException.class, ExceptionUtilsTest::throwsCheckedException);
+        assertEquals(1, ExceptionUtils.getThrowableCount(ioe));
 
-        try {
-            redeclareCheckedException();
-            fail("Exception not thrown");
-        } catch (final IOException ioe) {
-            assertEquals(1, ExceptionUtils.getThrowableCount(ioe));
-        }
+        ioe = assertThrows(IOException.class, ExceptionUtilsTest::redeclareCheckedException);
+        assertEquals(1, ExceptionUtils.getThrowableCount(ioe));
     }
 
-    private static int redeclareCheckedException() throws IOException {
+    private static int redeclareCheckedException() {
         return throwsCheckedException();
     }
 
@@ -585,41 +568,25 @@ public class ExceptionUtilsTest {
 
     @Test
     public void testWrapAndUnwrapError() {
-        try {
-            ExceptionUtils.wrapAndThrow(new OutOfMemoryError());
-            fail("Error not thrown");
-        } catch (final Throwable t) {
-            assertTrue(ExceptionUtils.hasCause(t, Error.class));
-        }
+        Throwable t = assertThrows(Throwable.class, () -> ExceptionUtils.wrapAndThrow(new OutOfMemoryError()));
+        assertTrue(ExceptionUtils.hasCause(t, Error.class));
     }
 
     @Test
     public void testWrapAndUnwrapRuntimeException() {
-        try {
-            ExceptionUtils.wrapAndThrow(new IllegalArgumentException());
-            fail("RuntimeException not thrown");
-        } catch (final Throwable t) {
-            assertTrue(ExceptionUtils.hasCause(t, RuntimeException.class));
-        }
+        Throwable t = assertThrows(Throwable.class, () -> ExceptionUtils.wrapAndThrow(new IllegalArgumentException()));
+        assertTrue(ExceptionUtils.hasCause(t, RuntimeException.class));
     }
 
     @Test
     public void testWrapAndUnwrapCheckedException() {
-        try {
-            ExceptionUtils.wrapAndThrow(new IOException());
-            fail("Checked Exception not thrown");
-        } catch (final Throwable t) {
-            assertTrue(ExceptionUtils.hasCause(t, IOException.class));
-        }
+        Throwable t = assertThrows(Throwable.class, () -> ExceptionUtils.wrapAndThrow(new IOException()));
+        assertTrue(ExceptionUtils.hasCause(t, IOException.class));
     }
 
     @Test
     public void testWrapAndUnwrapThrowable() {
-        try {
-            ExceptionUtils.wrapAndThrow(new TestThrowable());
-            fail("Checked Exception not thrown");
-        } catch (final Throwable t) {
-            assertTrue(ExceptionUtils.hasCause(t, TestThrowable.class));
-        }
+        Throwable t = assertThrows(Throwable.class, () -> ExceptionUtils.wrapAndThrow(new TestThrowable()));
+        assertTrue(ExceptionUtils.hasCause(t, TestThrowable.class));
     }
 }

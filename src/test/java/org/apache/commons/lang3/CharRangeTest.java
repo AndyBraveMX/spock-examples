@@ -18,17 +18,18 @@
  */
 package org.apache.commons.lang3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests {@link org.apache.commons.lang3.CharRange}.
@@ -123,21 +124,21 @@ public class CharRangeTest  {
         final CharRange rangeae = CharRange.isIn('a', 'e');
         final CharRange rangenotbf = CharRange.isIn('b', 'f');
 
-        assertFalse(rangea.equals(null));
+        assertNotEquals(null, rangea);
 
-        assertTrue(rangea.equals(rangea));
-        assertTrue(rangea.equals(CharRange.is('a')));
-        assertTrue(rangeae.equals(rangeae));
-        assertTrue(rangeae.equals(CharRange.isIn('a', 'e')));
-        assertTrue(rangenotbf.equals(rangenotbf));
-        assertTrue(rangenotbf.equals(CharRange.isIn('b', 'f')));
+        assertEquals(rangea, rangea);
+        assertEquals(rangea, CharRange.is('a'));
+        assertEquals(rangeae, rangeae);
+        assertEquals(rangeae, CharRange.isIn('a', 'e'));
+        assertEquals(rangenotbf, rangenotbf);
+        assertEquals(rangenotbf, CharRange.isIn('b', 'f'));
 
-        assertFalse(rangea.equals(rangeae));
-        assertFalse(rangea.equals(rangenotbf));
-        assertFalse(rangeae.equals(rangea));
-        assertFalse(rangeae.equals(rangenotbf));
-        assertFalse(rangenotbf.equals(rangea));
-        assertFalse(rangenotbf.equals(rangeae));
+        assertNotEquals(rangea, rangeae);
+        assertNotEquals(rangea, rangenotbf);
+        assertNotEquals(rangeae, rangea);
+        assertNotEquals(rangeae, rangenotbf);
+        assertNotEquals(rangenotbf, rangea);
+        assertNotEquals(rangenotbf, rangeae);
     }
 
     @Test
@@ -146,12 +147,12 @@ public class CharRangeTest  {
         final CharRange rangeae = CharRange.isIn('a', 'e');
         final CharRange rangenotbf = CharRange.isIn('b', 'f');
 
-        assertTrue(rangea.hashCode() == rangea.hashCode());
-        assertTrue(rangea.hashCode() == CharRange.is('a').hashCode());
-        assertTrue(rangeae.hashCode() == rangeae.hashCode());
-        assertTrue(rangeae.hashCode() == CharRange.isIn('a', 'e').hashCode());
-        assertTrue(rangenotbf.hashCode() == rangenotbf.hashCode());
-        assertTrue(rangenotbf.hashCode() == CharRange.isIn('b', 'f').hashCode());
+        assertEquals(rangea.hashCode(), rangea.hashCode());
+        assertEquals(rangea.hashCode(), CharRange.is('a').hashCode());
+        assertEquals(rangeae.hashCode(), rangeae.hashCode());
+        assertEquals(rangeae.hashCode(), CharRange.isIn('a', 'e').hashCode());
+        assertEquals(rangenotbf.hashCode(), rangenotbf.hashCode());
+        assertEquals(rangenotbf.hashCode(), CharRange.isIn('b', 'f').hashCode());
 
         assertFalse(rangea.hashCode() == rangeae.hashCode());
         assertFalse(rangea.hashCode() == rangenotbf.hashCode());
@@ -310,13 +311,8 @@ public class CharRangeTest  {
     @Test
     public void testContainsNullArg() {
         final CharRange range = CharRange.is('a');
-        try {
-            @SuppressWarnings("unused")
-            final
-            boolean contains = range.contains(null);
-        } catch(final IllegalArgumentException e) {
-            assertEquals("The Range must not be null", e.getMessage());
-        }
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> range.contains(null));
+        assertEquals("The Range must not be null", e.getMessage());
     }
 
     @Test
@@ -354,36 +350,21 @@ public class CharRangeTest  {
         final Iterator<Character> emptySetIt = emptySet.iterator();
         assertNotNull(emptySetIt);
         assertFalse(emptySetIt.hasNext());
-        try {
-            emptySetIt.next();
-            fail("Should throw NoSuchElementException");
-        } catch (final NoSuchElementException e) {
-            assertTrue(true);
-        }
+        assertThrows(NoSuchElementException.class, emptySetIt::next);
 
         final Iterator<Character> notFirstIt = notFirst.iterator();
         assertNotNull(notFirstIt);
         assertTrue(notFirstIt.hasNext());
         assertEquals(Character.valueOf((char) 0), notFirstIt.next());
         assertFalse(notFirstIt.hasNext());
-        try {
-            notFirstIt.next();
-            fail("Should throw NoSuchElementException");
-        } catch (final NoSuchElementException e) {
-            assertTrue(true);
-        }
+        assertThrows(NoSuchElementException.class, notFirstIt::next);
 
         final Iterator<Character> notLastIt = notLast.iterator();
         assertNotNull(notLastIt);
         assertTrue(notLastIt.hasNext());
         assertEquals(Character.valueOf(Character.MAX_VALUE), notLastIt.next());
         assertFalse(notLastIt.hasNext());
-        try {
-            notLastIt.next();
-            fail("Should throw NoSuchElementException");
-        } catch (final NoSuchElementException e) {
-            assertTrue(true);
-        }
+        assertThrows(NoSuchElementException.class, notLastIt::next);
     }
 
     //-----------------------------------------------------------------------
@@ -398,10 +379,10 @@ public class CharRangeTest  {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testIteratorRemove() {
         final CharRange a = CharRange.is('a');
         final Iterator<Character> aIt = a.iterator();
-        aIt.remove();
+        assertThrows(UnsupportedOperationException.class, aIt::remove);
     }
 }

@@ -19,12 +19,13 @@
 
 package org.apache.commons.lang3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
@@ -32,90 +33,92 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests {@link org.apache.commons.lang3.ThreadUtils}.
  */
 public class ThreadUtilsTest {
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadName() throws InterruptedException {
-        ThreadUtils.findThreadsByName(null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadGroupName() throws InterruptedException {
-        ThreadUtils.findThreadGroupsByName(null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadThreadGroupName1() throws InterruptedException {
-        ThreadUtils.findThreadsByName(null, "tgname");
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadThreadGroupName2() throws InterruptedException {
-        ThreadUtils.findThreadsByName("tname", (String) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadThreadGroupName3() throws InterruptedException {
-        ThreadUtils.findThreadsByName(null, (String) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadThreadGroup1() throws InterruptedException {
-        ThreadUtils.findThreadsByName("tname", (ThreadGroup) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadThreadGroup2() throws InterruptedException {
-        ThreadUtils.findThreadById(1L, (ThreadGroup) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testNullThreadThreadGroup3() throws InterruptedException {
-        ThreadUtils.findThreadsByName(null, (ThreadGroup) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testInvalidThreadId() throws InterruptedException {
-        ThreadUtils.findThreadById(-5L);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testThreadGroupsByIdFail() throws InterruptedException {
-        ThreadUtils.findThreadById(Thread.currentThread().getId(), (String) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testThreadgroupsNullParent() throws InterruptedException {
-        ThreadUtils.findThreadGroups(null, true, ThreadUtils.ALWAYS_TRUE_PREDICATE);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testThreadgroupsNullPredicate() throws InterruptedException {
-        ThreadUtils.findThreadGroups(null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testThreadsNullPredicate() throws InterruptedException {
-        ThreadUtils.findThreads(null);
+    @Test
+    public void testNullThreadName() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadsByName(null));
     }
 
     @Test
-    public void testNoThread() throws InterruptedException {
+    public void testNullThreadGroupName() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadGroupsByName(null));
+    }
+
+    @Test
+    public void testNullThreadThreadGroupName1() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadsByName(null, "tgname"));
+    }
+
+    @Test
+    public void testNullThreadThreadGroupName2() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadsByName("tname", (String) null));
+    }
+
+    @Test
+    public void testNullThreadThreadGroupName3() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadsByName(null, (String) null));
+    }
+
+    @Test
+    public void testNullThreadThreadGroup1() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadsByName("tname", (ThreadGroup) null));
+    }
+
+    @Test
+    public void testNullThreadThreadGroup2() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadById(1L, (ThreadGroup) null));
+    }
+
+    @Test
+    public void testNullThreadThreadGroup3() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadsByName(null, (ThreadGroup) null));
+    }
+
+    @Test
+    public void testInvalidThreadId() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadById(-5L));
+    }
+
+    @Test
+    public void testThreadGroupsByIdFail() {
+        assertThrows(IllegalArgumentException.class,
+                () -> ThreadUtils.findThreadById(Thread.currentThread().getId(), (String) null));
+    }
+
+    @Test
+    public void testThreadgroupsNullParent() {
+        assertThrows(IllegalArgumentException.class,
+                () -> ThreadUtils.findThreadGroups(null, true, ThreadUtils.ALWAYS_TRUE_PREDICATE));
+    }
+
+    @Test
+    public void testThreadgroupsNullPredicate() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreadGroups(null));
+    }
+
+    @Test
+    public void testThreadsNullPredicate() {
+        assertThrows(IllegalArgumentException.class, () -> ThreadUtils.findThreads(null));
+    }
+
+    @Test
+    public void testNoThread() {
         assertEquals(0, ThreadUtils.findThreadsByName("some_thread_which_does_not_exist_18762ZucTT").size());
     }
 
     @Test
-    public void testNoThreadGroup() throws InterruptedException {
+    public void testNoThreadGroup() {
         assertEquals(0, ThreadUtils.findThreadGroupsByName("some_thread_group_which_does_not_exist_18762ZucTTII").size());
     }
 
     @Test
-    public void testSystemThreadGroupExists() throws InterruptedException {
+    public void testSystemThreadGroupExists() {
         final ThreadGroup systemThreadGroup = ThreadUtils.getSystemThreadGroup();
         assertNotNull(systemThreadGroup);
         assertNull(systemThreadGroup.getParent());
@@ -123,12 +126,12 @@ public class ThreadUtilsTest {
     }
 
     @Test
-    public void testAtLeastOneThreadExists() throws InterruptedException {
+    public void testAtLeastOneThreadExists() {
         assertTrue(ThreadUtils.getAllThreads().size() > 0);
     }
 
     @Test
-    public void testAtLeastOneThreadGroupsExists() throws InterruptedException {
+    public void testAtLeastOneThreadGroupsExists() {
         assertTrue(ThreadUtils.getAllThreadGroups().size() > 0);
     }
 
@@ -275,7 +278,7 @@ public class ThreadUtilsTest {
     }
 
     @Test
-    public void testConstructor() throws InterruptedException {
+    public void testConstructor() {
         assertNotNull(new ThreadUtils());
         final Constructor<?>[] cons = ThreadUtils.class.getDeclaredConstructors();
         assertEquals(1, cons.length);

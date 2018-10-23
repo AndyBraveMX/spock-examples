@@ -537,10 +537,10 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Vintage engine needed for exectuing JUnit 4.x tests. Remove once all tests have been migrated to JUnit 5. -->
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.junit-pioneer</groupId>
+      <artifactId>junit-pioneer</artifactId>
+      <version>0.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -648,6 +648,8 @@
     <commons.encoding>utf-8</commons.encoding>
 
     <checkstyle.plugin.version>3.0.0</checkstyle.plugin.version>
+    <checkstyle.version>8.13</checkstyle.version>
+
     <spotbugs.plugin.version>3.1.6</spotbugs.plugin.version>
     <japicmp.skip>false</japicmp.skip>
 
@@ -810,6 +812,13 @@
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <enableRulesSummary>false</enableRulesSummary>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
