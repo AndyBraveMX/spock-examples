@@ -36,6 +36,43 @@ class FirstSpecification extends Specification {
 		 StringUtils.isBlank(multipleSpacesString) == true
 		 StringUtils.isBlank(notNullString) == false
 	 };
+	 
+	 def "Prueba trim de cadenas" () {
+		 expect: 
+		 StringUtils.trim(input) == output;
+		 
+		 where:
+		 input      | output
+		 ""         | ""
+		 "abc"      | "abc"
+		 "  ab"     | "ab"
+		 "  abc   " | "abc"
+	 };
+	 
+	 def "Prueba trim to null "() {
+		 expect: 
+		 StringUtils.trimToNull(input)  == output;
+		 
+		 where:
+		 input    | output
+		 ""       | null
+		 "    "   | null
+		 "abc"    | "abc"
+		 "   abc" | "abc"
+	 }
+	 
+	 def "Prueba trim to empty" (){
+		 expect:
+		 StringUtils.trimToEmpty(input) == output;
+		 
+		 where:
+		 input    | output
+		 null     | ""
+		 ""       | ""
+		 "    "   | ""
+		 "abc"    | "abc"
+		 "   abc" | "abc"
+	 }
 	   
  
 }

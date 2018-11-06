@@ -1,5 +1,6 @@
 package org.apache.commons.lang3;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,6 +34,12 @@ class StringUtilsAndysTest {
 		assertTrue(StringUtils.isBlank(whiteString));
 		assertTrue(StringUtils.isBlank(multipleSpacesString));
 		assertFalse(StringUtils.isBlank(notNullString));
+	}
+	
+	@Test
+	public void testTrim() {
+		assertEquals("", StringUtils.trim(""));
+		assertEquals("abc", StringUtils.trim(" abc"));
 	}
 
 }
